@@ -1,20 +1,9 @@
+
 import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Word extends Decorator {
 	private String thisWord;
-
-	public static Set<Set<Character>> getAllVowelSets() {
-		return allVowelSets;
-	}
-
-	public static void setAllVowelSets(Set<Set<Character>> allVowelSets) {
-		Word.allVowelSets = allVowelSets;
-	}
-
-	public static Set<Set<Character>> allVowelSets = new HashSet<>();
-
-
 
 	public Word(Component delegate, String str) {
 		super(delegate);
@@ -25,21 +14,18 @@ public class Word extends Decorator {
 	public Set<Character> getConsonantsInWord() {
 		Set<Character> consonants = new HashSet<>();
 		String consonantString = "bcdfghjklmnpqrstvwxz";
-		char[] consonantArray = thisWord.toLowerCase().toCharArray();
-
+		char[] consonantArray = thisWord.toCharArray();
 		for (char ch : consonantArray) {
 			if (consonantString.indexOf(ch) != -1) {
 				consonants.add(ch);
 			}
 		}
 
-		if (thisWord.toLowerCase().contains("y")) {
-			if (Ywords.hasYconsonant.contains(thisWord.toLowerCase())) {
+		if(thisWord.contains("y")) {
+			if (Ywords.hasYconsonant.contains(thisWord)) {
 				consonants.add('y');
 			}
 		}
-
-
 		return consonants;
 	}
 
@@ -47,24 +33,18 @@ public class Word extends Decorator {
 	public Set<Character> getVowelsInWord() {
 		Set<Character> vowels = new HashSet<>();
 		String vowelString = "aeiou";
-		char[] vowelArray = thisWord.toLowerCase().toCharArray();
-
+		char[] vowelArray = thisWord.toCharArray();
 		for (char ch : vowelArray) {
 			if (vowelString.indexOf(ch) != -1) {
 				vowels.add(ch);
 			}
 		}
 
-		if (thisWord.toLowerCase().contains("y")) {
-			if (Ywords.hasYvowel.contains(thisWord.toLowerCase())) {
+		if(thisWord.contains("y")) {
+			if (Ywords.hasYvowel.contains(thisWord)) {
 				vowels.add('y');
 			}
 		}
-
-		allVowelSets.add(vowels);
-
-		//System.out.println("At word: "+allVowelSets);
-
 		return vowels;
 	}
 
