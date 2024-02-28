@@ -1,7 +1,8 @@
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class Decorator extends Component {
 	private Component delegate;
@@ -15,11 +16,7 @@ public abstract class Decorator extends Component {
 
 	@Override
 	public Set<Character> getConsonants() {
-		Set<Character> delegateConsonants = delegate.getConsonants();
-		Set<Character> consonantFinalSet = new TreeSet<>(delegateConsonants);
-		Set<Character> consonantsInWord = getConsonantsInWord();
-		consonantFinalSet.addAll(consonantsInWord);
-		return consonantFinalSet;
+		return Stream.concat(delegate.getConsonants().stream(), getConsonantsInWord().stream()).collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	@Override
@@ -49,36 +46,21 @@ public abstract class Decorator extends Component {
 		return eliminateSmallerSets(newCombinations);
 	}
 
+	@Override
+	public void print() {
+		delegate.print();
+	}
+
 	private int getMaxSetSize(Set<Set<Character>> sets){
 		return sets.stream().mapToInt(Set::size).max().orElse(0);
 	}
 
 	private Set<Set<Character>> filterSetsBySize(Set<Set<Character>> combinations, int maxSize){
-		Set<Set<Character>> newCombinationsSets = new HashSet<>();
-		for(Set<Character> set: combinations){
-			if(set.size() == maxSize)
-				newCombinationsSets.add(set);
-		}
-		return newCombinationsSets;
+		return combinations.stream().filter(set -> set.size() == maxSize).collect(Collectors.toSet());
 	}
 
 	private Set<Set<Character>> eliminateSmallerSets(Set<Set<Character>> combinations) {
-		//Set<Set<Character>> result = new HashSet<>();
-		//int maxSize = combinations.stream().mapToInt(Set::size).max().orElse(0);
 		int maxSize = getMaxSetSize(combinations);
-
-		/*for (Set<Character> set : combinations) {
-			if (set.size() == maxSize) {
-				result.add(set);
-			}
-		}*/
-
 		return filterSetsBySize(combinations, maxSize);
-	}
-
-
-	@Override
-	public void print() {
-		delegate.print();
 	}
 }

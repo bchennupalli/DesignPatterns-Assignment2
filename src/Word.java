@@ -1,4 +1,5 @@
 
+
 import java.util.HashSet;
 import java.util.*;
 
@@ -20,7 +21,6 @@ public class Word extends Decorator {
 				consonants.add(ch);
 			}
 		}
-
 		if(thisWord.contains("y")) {
 			if (Ywords.hasYconsonant.contains(thisWord)) {
 				consonants.add('y');
@@ -39,7 +39,6 @@ public class Word extends Decorator {
 				vowels.add(ch);
 			}
 		}
-
 		if(thisWord.contains("y")) {
 			if (Ywords.hasYvowel.contains(thisWord)) {
 				vowels.add('y');
