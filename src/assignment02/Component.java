@@ -1,3 +1,5 @@
+package assignment02;
+
 import java.util.Set;
 
 public abstract class Component {

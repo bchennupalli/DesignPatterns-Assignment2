@@ -1,3 +1,5 @@
+package assignment02;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -16,7 +18,8 @@ public abstract class Decorator extends Component {
 
 	@Override
 	public Set<Character> getConsonants() {
-		return Stream.concat(delegate.getConsonants().stream(), getConsonantsInWord().stream()).collect(Collectors.toCollection(TreeSet::new));
+		return Stream.concat(delegate.getConsonants().stream(), getConsonantsInWord().stream())
+				.collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	@Override
@@ -25,23 +28,23 @@ public abstract class Decorator extends Component {
 		Set<Character> vowelsInCurrentWord = getVowelsInWord();
 
 		if (!vowelsInCurrentWord.isEmpty() && existingCombinations.isEmpty()) {
-			existingCombinations = new HashSet<>();
-			for (Character vowel : vowelsInCurrentWord) {
-				Set<Character> singleVowelSet = new TreeSet<>();
-				singleVowelSet.add(vowel);
-				existingCombinations.add(singleVowelSet);
-			}
-			return existingCombinations;
+			return vowelsInCurrentWord.stream()
+					.map(vowel -> {
+						Set<Character> singleVowelSet = new TreeSet<>();
+						singleVowelSet.add(vowel);
+						return singleVowelSet;
+					})
+					.collect(Collectors.toSet());
 		}
 
-		Set<Set<Character>> newCombinations = new HashSet<>();
-		for (Set<Character> existingSet : existingCombinations) {
-			for (Character vowel : vowelsInCurrentWord) {
-				Set<Character> newSet = new TreeSet<>(existingSet);
-				newSet.add(vowel);
-				newCombinations.add(newSet);
-			}
-		}
+		Set<Set<Character>> newCombinations = existingCombinations.stream()
+				.flatMap(existingSet -> vowelsInCurrentWord.stream()
+						.map(vowel -> {
+							Set<Character> newSet = new TreeSet<>(existingSet);
+							newSet.add(vowel);
+							return newSet;
+						}))
+				.collect(Collectors.toCollection(HashSet::new));
 
 		return eliminateSmallerSets(newCombinations);
 	}
@@ -52,11 +55,16 @@ public abstract class Decorator extends Component {
 	}
 
 	private int getMaxSetSize(Set<Set<Character>> sets){
-		return sets.stream().mapToInt(Set::size).max().orElse(0);
+		return sets.stream()
+				.mapToInt(Set::size)
+				.max()
+				.orElse(0);
 	}
 
 	private Set<Set<Character>> filterSetsBySize(Set<Set<Character>> combinations, int maxSize){
-		return combinations.stream().filter(set -> set.size() == maxSize).collect(Collectors.toSet());
+		return combinations.stream()
+				.filter(set -> set.size() == maxSize)
+				.collect(Collectors.toSet());
 	}
 
 	private Set<Set<Character>> eliminateSmallerSets(Set<Set<Character>> combinations) {
